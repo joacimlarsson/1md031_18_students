@@ -1,9 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>DELI-VERY</title>
-    </head>
-    <body>
-        <h1>Hello World!!!</h1>
-    </body>
+
+<head>
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script type="text/javascript" src="js/menu.js"></script>
+  <script src="js/js_script.js"></script>
+  <script src="https://vuejs.org/js/vue.js"></script>
+  <script src="js/vue_script.js" defer></script>
+  <title>BurgerOnline</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <main id="mainy">
+    <section class="overdel">
+      <img src="https://loonies.files.wordpress.com/2009/11/4086542157.jpg" alt="kråkor" title="kråkor" id="krakor">
+      <h1 class="overskrift">Välkommen till BurgerOnline (Restaurang Kråkan)</h1>
+
+    </section>
+    <section id="burgarval">
+      <h2 class="overskrift2">Välj Hamburgare:</h2>
+      <p class="valtext">Här väljer du vilken hamburgare du vill ha</p>
+      <br>
+      <div class="gridburger">
+
+        <ul v-for="burger in burgers" id="menylista">
+          <h3>
+            {{ burger.prodName }}
+          </h3>
+
+          <img :src=burger.img width="200" height="150">
+
+          <li v-if="!burger.lactose">
+            {{ nolactose }}
+          </li>
+
+          <li v-else-if="!burger.gluten">
+            {{ nogluten }}
+          </li>
+
+          <div v-else>
+            <br>
+          </div>
+
+          <li v-if="!burger.lactose && !burger.gluten">
+            {{ nogluten }}
+          </li>
+
+          <div v-else>
+             <br>
+          </div>
+          Lägg till
+          <input type="checkbox" name="cb" :value=burger.prodName class="burgerCheckbox">
+
+        </ul>
+
+      </div>
+    </section>
+    <br />
+
+    <section id="persinfo">
+      <section class="infotext">
+        <h2 class="overskrift3">Personlig information:</h2>
+        <p class="valtext2">Här skriver du in viktig personlig information</p>
+        <form>
+          <p>
+            <label for="name">Namn</label><br>
+            <input type="text" id="fullname" name="fn" required="required" placeholder="För- och efternamn">
+          </p>
+          <p>
+            <label for="email">Email</label><br>
+            <input type="email" id="email" name="em" required="required" placeholder="Mailadress">
+          </p>
+          <p>
+            <label for="betalningsmetod">Välj Betalningsmetod</label><br>
+            <select id="betalningsmetod" name="bm">
+              <option selected="selected" value="Kortbetalning">Kortbetalning</option>
+              <option value="Kontant">Kontant</option>
+              <option value="Swish">Swish</option>
+              <option value="Faktura: Ät nu, betala imorgon">Faktura: Ät nu, betala imorgon</option>
+            </select>
+          </p>
+          <p>
+            Kön<br>
+            <input type="radio" id="spelaringenroll" name="gender" value="Man" checked="checked">
+            <label for="spelaringenroll">Man</label><br>
+
+            <input type="radio" id="oviktigt" name="gender" value="Kvinna">
+            <label for="oviktigt">Kvinna</label><br>
+
+            <input type="radio" id="vembryrsig" name="gender" value="Icke-binär">
+            <label for="vembryrsig">Icke-binär</label><br>
+
+            <input type="radio" id="vembryrsig" name="gender" value="Vill inte uppge">
+            <label for="vembryrsig">Vill inte uppge</label><br>
+          </p>
+      </section>
+      </form>
+    </section>
+    <div id="bodymap">
+      <h1> Click in the map! </h1>
+      <a href="/dispatcher" target="_blank">Open dispatcher in new window</a>.
+      <div class="view-box">
+        <div id="dots" v-on:click="displayOrder">
+          <div v-for="(order, key) in orders" v-bind:style="{ left: order.details.x + 'px', top: order.details.y + 'px'}">
+            {{key}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button v-on:click="addOrder" id="skickain" type="submit"><img src="https://st.depositphotos.com/2400497/2948/v/950/depositphotos_29482799-stock-illustration-cartoon-crow.jpg" width="20"> Skicka beställning
+    </button>
+    <br>
+    <div v-if="hasordered" >
+      <p class="bekraftelse">Orderbekräftelse</p>
+
+
+      <p class="bekraftelse">Kunduppgifter:</p>
+
+      <ul style="list-style-type:none;">
+        <li> Namn: {{persinfo[0]}} </li>
+        <li> Email: {{persinfo[1]}} </li>
+        <li> Betalningsmetod: {{persinfo[2]}} </li>
+        <li> Kön: {{persinfo[3]}} </li>
+      </ul>
+
+      <p class="bekraftelse">Beställning:</p>
+
+
+      <ul v-for="item in array">
+        <li> {{item}} </li>
+      </ul>
+
+    </div>
+
+
+
+  </main>
+  <footer>
+    <hr>
+    <p> &copy; Restaurang Kråkan </p>
+  </footer>
+</body>
+
 </html>
